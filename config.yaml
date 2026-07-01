@@ -1,0 +1,24 @@
+# ===========================================
+# 海斛集团 - 配置文件
+# ===========================================
+
+server:
+  port: "8485"          # 服务端口
+
+database:
+  driver: sqlite        # 数据库类型: sqlite / mysql
+  dsn: exam.db          # SQLite: 文件路径  MySQL: user:pass@tcp(host:port)/dbname?charset=utf8mb4&parseTime=True
+
+# Redis 缓存配置
+redis:
+  host: "192.168.2.6"     # Redis 地址
+  port: "6379"          # Redis 端口
+  password: ""          # Redis 密码（无密码留空）
+  db: 12                 # Redis 数据库编号
+
+# 企业微信配置（不配置则企业微信登录不可用）
+wxwork:
+  corp_id: "wwba0cf80281e03d5e"
+  agent_id: "1000073"
+  secret: "SiVBRb0GyD2WTrEj0tijRT7A6rf18VKFrx9T0XHH4-8"
+  redirect_uri: ""

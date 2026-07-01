@@ -1,0 +1,1770 @@
+basePath: /
+definitions:
+  models.APIResponse:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
+    type: object
+  models.AnswerItem:
+    properties:
+      questionId:
+        type: integer
+      selectedOptions:
+        items:
+          type: string
+        type: array
+    type: object
+  models.BatchImportResult:
+    properties:
+      added:
+        type: integer
+      skipped:
+        type: integer
+    type: object
+  models.Category:
+    properties:
+      createdAt:
+        type: string
+      desc:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.CategoryWithCount:
+    properties:
+      createdAt:
+        type: string
+      desc:
+        type: string
+      examCount:
+        type: integer
+      id:
+        type: integer
+      name:
+        type: string
+      questionCount:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  models.ChangePasswordReq:
+    properties:
+      newPassword:
+        type: string
+      oldPassword:
+        type: string
+    required:
+    - newPassword
+    - oldPassword
+    type: object
+  models.CreateCategoryReq:
+    properties:
+      desc:
+        type: string
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  models.CreateExamReq:
+    properties:
+      allowRepeat:
+        type: boolean
+      canViewAnswer:
+        type: boolean
+      categoryId:
+        type: integer
+      duration:
+        type: integer
+      endTime:
+        type: string
+      questionIds:
+        items:
+          type: integer
+        type: array
+      startTime:
+        type: string
+      title:
+        type: string
+      totalScore:
+        type: integer
+    required:
+    - categoryId
+    - duration
+    - endTime
+    - startTime
+    - title
+    - totalScore
+    type: object
+  models.CreateQuestionReq:
+    properties:
+      answer:
+        items:
+          type: string
+        type: array
+      categoryId:
+        type: integer
+      explanation:
+        type: string
+      options:
+        additionalProperties:
+          type: string
+        description: 单选/多选必填；判断自动生成；填空/简答可为空
+        type: object
+      title:
+        type: string
+      type:
+        type: string
+    required:
+    - answer
+    - categoryId
+    - title
+    - type
+    type: object
+  models.Exam:
+    properties:
+      allowRepeat:
+        type: boolean
+      canViewAnswer:
+        type: boolean
+      categoryId:
+        type: integer
+      createdAt:
+        type: string
+      duration:
+        description: 分钟
+        type: integer
+      endTime:
+        type: string
+      id:
+        type: integer
+      startTime:
+        type: string
+      status:
+        description: upcoming/active/ended
+        type: string
+      title:
+        type: string
+      totalScore:
+        type: integer
+      updatedAt:
+        type: string
+    type: object
+  models.ExamDetailData:
+    properties:
+      exam:
+        $ref: '#/definitions/models.Exam'
+      questionCount:
+        type: integer
+      questions:
+        items:
+          $ref: '#/definitions/models.ExamQuestionDetail'
+        type: array
+      totalScore:
+        type: number
+    type: object
+  models.ExamQuestionDetail:
+    properties:
+      answer:
+        items:
+          type: string
+        type: array
+      explanation:
+        type: string
+      options:
+        items:
+          $ref: '#/definitions/models.OptionPair'
+        type: array
+      questionId:
+        type: integer
+      score:
+        type: number
+      title:
+        type: string
+      type:
+        type: string
+    type: object
+  models.ExamQuestionItem:
+    properties:
+      answer:
+        items:
+          type: string
+        type: array
+      examId:
+        type: integer
+      explanation:
+        type: string
+      id:
+        type: integer
+      options:
+        items:
+          $ref: '#/definitions/models.OptionPair'
+        type: array
+      title:
+        type: string
+      type:
+        type: string
+    type: object
+  models.ExamQuestionsData:
+    properties:
+      allowRepeat:
+        type: boolean
+      canViewAnswer:
+        type: boolean
+      correctCount:
+        type: integer
+      examId:
+        type: integer
+      isCompleted:
+        type: boolean
+      list:
+        items:
+          $ref: '#/definitions/models.ExamQuestionItem'
+        type: array
+      results:
+        items:
+          $ref: '#/definitions/models.ResultItem'
+        type: array
+      title:
+        type: string
+      totalQuestions:
+        type: integer
+      totalScore:
+        description: 已完成时包含的字段
+        type: number
+      wrongCount:
+        type: integer
+    type: object
+  models.ExamResultRes:
+    properties:
+      canViewAnswer:
+        type: boolean
+      correctCount:
+        type: integer
+      results:
+        items:
+          $ref: '#/definitions/models.ResultItem'
+        type: array
+      totalQuestions:
+        type: integer
+      totalScore:
+        type: number
+      unansweredCount:
+        type: integer
+      wrongCount:
+        type: integer
+    type: object
+  models.ImportExamQuestionsReq:
+    properties:
+      defaultScore:
+        type: number
+      questionIds:
+        items:
+          type: integer
+        type: array
+      scores:
+        additionalProperties:
+          format: float64
+          type: number
+        type: object
+    required:
+    - questionIds
+    type: object
+  models.LoginReq:
+    properties:
+      password:
+        type: string
+      role:
+        description: '前端选择的身份: admin/student'
+        type: string
+      workNo:
+        type: string
+    required:
+    - password
+    - workNo
+    type: object
+  models.LoginResponseData:
+    properties:
+      expireAt:
+        type: integer
+      token:
+        type: string
+      user:
+        $ref: '#/definitions/models.LoginUserDTO'
+    type: object
+  models.LoginUserDTO:
+    properties:
+      avatar:
+        type: string
+      id:
+        type: integer
+      isAdmin:
+        type: boolean
+      name:
+        type: string
+      source:
+        type: string
+      workNo:
+        type: string
+      wxUserId:
+        type: string
+    type: object
+  models.OptionPair:
+    properties:
+      label:
+        type: string
+      text:
+        type: string
+    type: object
+  models.PagedData:
+    properties:
+      list: {}
+      page:
+        type: integer
+      pageSize:
+        type: integer
+      total:
+        type: integer
+    type: object
+  models.Question:
+    properties:
+      answer:
+        description: 'JSON: ["a","b"]（fill/essay 为纯文本答案）'
+        type: string
+      categoryId:
+        type: integer
+      createdAt:
+        type: string
+      explanation:
+        type: string
+      id:
+        type: integer
+      options:
+        description: 'JSON: {"a":"选项A","b":"选项B"}（judge 自动为对/错；fill/essay 可为空）'
+        type: string
+      title:
+        type: string
+      type:
+        description: single / multiple / judge / fill / essay
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.ResultItem:
+    properties:
+      correctAnswer:
+        items:
+          type: string
+        type: array
+      isCorrect:
+        type: boolean
+      isUnanswered:
+        type: boolean
+      questionId:
+        type: integer
+      userAnswer:
+        items:
+          type: string
+        type: array
+    type: object
+  models.Student:
+    properties:
+      avatar:
+        description: 头像
+        type: string
+      createdAt:
+        type: string
+      id:
+        type: integer
+      name:
+        description: 姓名
+        type: string
+      source:
+        description: 来源：import（管理员导入）/ wxwork（企微注册）
+        type: string
+      updatedAt:
+        type: string
+      workNo:
+        description: 学号/工号（唯一标识）
+        type: string
+      wxOpenId:
+        description: 企业微信 OpenID
+        type: string
+      wxUserId:
+        description: 企业微信 UserID（企微登录绑定）
+        type: string
+    type: object
+  models.StudentExamItem:
+    properties:
+      allowRepeat:
+        type: boolean
+      canViewAnswer:
+        type: boolean
+      duration:
+        type: integer
+      endTime:
+        type: string
+      hasAttempted:
+        type: boolean
+      id:
+        type: integer
+      questionCount:
+        type: integer
+      startTime:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+      totalScore:
+        type: integer
+    type: object
+  models.StudentImportBatchReq:
+    properties:
+      students:
+        items:
+          $ref: '#/definitions/models.StudentImportReq'
+        type: array
+    required:
+    - students
+    type: object
+  models.StudentImportReq:
+    properties:
+      name:
+        type: string
+      password:
+        type: string
+      workNo:
+        type: string
+    required:
+    - name
+    - password
+    - workNo
+    type: object
+  models.StudentRecordItem:
+    properties:
+      canViewAnswer:
+        type: boolean
+      correctCount:
+        type: integer
+      date:
+        type: string
+      examTitle:
+        type: string
+      id:
+        type: integer
+      score:
+        type: number
+      totalCount:
+        type: integer
+    type: object
+  models.SubmitExamReq:
+    properties:
+      answers:
+        items:
+          $ref: '#/definitions/models.AnswerItem'
+        type: array
+      examId:
+        type: integer
+      studentName:
+        type: string
+      submitTime:
+        type: string
+    required:
+    - examId
+    - studentName
+    type: object
+  models.UpdateCategoryReq:
+    properties:
+      desc:
+        type: string
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  models.UpdateExamReq:
+    properties:
+      allowRepeat:
+        type: boolean
+      canViewAnswer:
+        type: boolean
+      categoryId:
+        type: integer
+      duration:
+        type: integer
+      endTime:
+        type: string
+      questionIds:
+        items:
+          type: integer
+        type: array
+      startTime:
+        type: string
+      title:
+        type: string
+      totalScore:
+        type: integer
+    type: object
+  models.UpdateQuestionReq:
+    properties:
+      answer:
+        items:
+          type: string
+        type: array
+      categoryId:
+        type: integer
+      explanation:
+        type: string
+      options:
+        additionalProperties:
+          type: string
+        type: object
+      title:
+        type: string
+      type:
+        type: string
+    type: object
+  models.WxWorkAuthData:
+    properties:
+      authUrl:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: admin@svip.com
+    name: API 支持
+  description: |-
+    企业级在线考试系统，支持考题管理、考试配置、考生管理、成绩统计与导出。
+    认证方式：Bearer Token（通过 /api/auth/login 获取，Cookie 或 Authorization Header 传递）
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://svip.com/terms
+  title: 在线考试系统 API
+  version: "2.0"
+paths:
+  /api/admin/categories:
+    get:
+      consumes:
+      - application/json
+      description: 返回所有考试分类（含各级别下的考试数和题目数）
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 分类列表
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.CategoryWithCount'
+                  type: array
+              type: object
+        "500":
+          description: 查询失败
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 获取考试分类列表
+      tags:
+      - 分类管理
+    post:
+      consumes:
+      - application/json
+      description: 新增一个考试分类
+      parameters:
+      - description: 分类信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateCategoryReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 创建成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Category'
+              type: object
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: 创建失败
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 创建考试分类
+      tags:
+      - 分类管理
+  /api/admin/categories/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除指定分类（如果分类下有考试或题目则不允许删除）
+      parameters:
+      - description: 分类 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除成功
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: 删除失败（含关联数据）
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 删除考试分类
+      tags:
+      - 分类管理
+    put:
+      consumes:
+      - application/json
+      description: 修改指定分类的名称和描述
+      parameters:
+      - description: 分类 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 新分类信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateCategoryReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新成功
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: 更新失败
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 更新考试分类
+      tags:
+      - 分类管理
+  /api/admin/exams:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询考试，支持按分类、关键词筛选
+      parameters:
+      - description: 分类 ID
+        in: query
+        name: categoryId
+        type: string
+      - description: 搜索关键词
+        in: query
+        name: keyword
+        type: string
+      - description: 页码 (默认 1)
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数 (默认 10)
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 考试列表
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.PagedData'
+              type: object
+        "500":
+          description: 查询失败
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 获取考试列表
+      tags:
+      - 考试管理
+    post:
+      consumes:
+      - application/json
+      description: 创建一场新考试，可同时指定考题列表
+      parameters:
+      - description: 考试信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateExamReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 创建成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Exam'
+              type: object
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: 创建失败
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 创建考试
+      tags:
+      - 考试管理
+  /api/admin/exams/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除指定考试及其关联数据
+      parameters:
+      - description: 考试 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除成功
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: 无效的ID
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: 删除失败
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 删除考试
+      tags:
+      - 考试管理
+    put:
+      consumes:
+      - application/json
+      description: 修改考试基本信息（标题、时间、时长、设置等）
+      parameters:
+      - description: 考试 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 新考试信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateExamReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新成功
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: 更新失败
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 更新考试
+      tags:
+      - 考试管理
+  /api/admin/exams/{id}/questions:
+    get:
+      consumes:
+      - application/json
+      description: 获取某场考试下所有考题及分值（含正确答案——管理端可见）
+      parameters:
+      - description: 考试 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 考题详情
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.ExamDetailData'
+              type: object
+        "404":
+          description: 考试不存在
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 查看考试内考题详情
+      tags:
+      - 考试管理
+    post:
+      consumes:
+      - application/json
+      description: 从题库选取题目加入考试，可批量添加并设置每题分值
+      parameters:
+      - description: 考试 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 题目 ID 列表及分值
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.ImportExamQuestionsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 添加结果
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.BatchImportResult'
+              type: object
+        "404":
+          description: 考试不存在
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: 添加失败
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 向考试添加考题
+      tags:
+      - 考试管理
+  /api/admin/exams/{id}/questions/{qid}:
+    delete:
+      consumes:
+      - application/json
+      description: 从指定考试中删除一道题目
+      parameters:
+      - description: 考试 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 题目 ID
+        in: path
+        name: qid
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 移除成功
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "404":
+          description: 该考题不在考试中
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 从考试中移除考题
+      tags:
+      - 考试管理
+    put:
+      consumes:
+      - application/json
+      description: 修改某场考试中某道题目的分值
+      parameters:
+      - description: 考试 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 题目 ID
+        in: path
+        name: qid
+        required: true
+        type: integer
+      - description: '{\'
+        in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 分值更新成功
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "404":
+          description: 该考题不在考试中
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 修改考题分值
+      tags:
+      - 考试管理
+  /api/admin/questions:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询题库题目，支持按分类、关键词、题型筛选
+      parameters:
+      - description: 分类 ID
+        in: query
+        name: categoryId
+        type: string
+      - description: 搜索关键词（题干）
+        in: query
+        name: keyword
+        type: string
+      - description: 题型：single/multiple/judge/fill/essay
+        in: query
+        name: type
+        type: string
+      - description: 页码 (默认 1)
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数 (默认 10)
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 题目列表
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.PagedData'
+              type: object
+        "500":
+          description: 查询失败
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 获取题目列表
+      tags:
+      - 题目管理
+    post:
+      consumes:
+      - application/json
+      description: 新增一道题目到题库
+      parameters:
+      - description: 题目信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateQuestionReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 添加成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Question'
+              type: object
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: 创建失败
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 创建题目
+      tags:
+      - 题目管理
+  /api/admin/questions/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除指定题目
+      parameters:
+      - description: 题目 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 删除成功
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: 无效的ID
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: 删除失败
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 删除题目
+      tags:
+      - 题目管理
+    put:
+      consumes:
+      - application/json
+      description: 修改指定题目的内容、选项、答案等
+      parameters:
+      - description: 题目 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: 新题目信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.UpdateQuestionReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新成功
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 更新题目
+      tags:
+      - 题目管理
+  /api/admin/questions/available:
+    get:
+      consumes:
+      - application/json
+      description: 查询同分类下尚未加入指定考试的题目，供管理员选题导入
+      parameters:
+      - description: 考试 ID
+        in: query
+        name: examId
+        required: true
+        type: integer
+      - description: 搜索关键词
+        in: query
+        name: keyword
+        type: string
+      - description: 题型筛选
+        in: query
+        name: type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 可导入题目列表
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: 缺少 examId
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "404":
+          description: 考试不存在
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 获取可导入的题目列表
+      tags:
+      - 考试管理
+  /api/admin/questions/import:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 通过上传文件（json/csv/xlsx）批量导入题目到指定分类
+      parameters:
+      - description: 分类 ID
+        in: formData
+        name: categoryId
+        required: true
+        type: integer
+      - description: 导入文件 (.json/.csv/.xlsx)
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 导入成功
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: 参数错误或文件格式错误
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: 导入失败
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 批量导入题目
+      tags:
+      - 题目管理
+  /api/admin/scores:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询所有考生的考试成绩，支持按关键词、分类筛选
+      parameters:
+      - description: 搜索关键词（考生姓名/考试名称）
+        in: query
+        name: keyword
+        type: string
+      - description: 分类 ID
+        in: query
+        name: categoryId
+        type: string
+      - description: 页码 (默认 1)
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数 (默认 10)
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成绩列表
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.PagedData'
+              type: object
+        "500":
+          description: 查询失败
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 获取成绩列表
+      tags:
+      - 成绩管理
+  /api/admin/scores/export:
+    get:
+      consumes:
+      - application/json
+      description: 按分类导出成绩为 CSV 或 Excel 文件
+      parameters:
+      - description: 分类 ID（为空则导出所有）
+        in: query
+        name: categoryId
+        type: string
+      - description: 导出格式：csv 或 xlsx（默认 xlsx）
+        in: query
+        name: format
+        type: string
+      produces:
+      - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+      - text/csv
+      responses:
+        "200":
+          description: 成绩文件下载
+          schema:
+            type: file
+        "500":
+          description: 导出失败
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 导出成绩
+      tags:
+      - 成绩管理
+  /api/admin/students:
+    get:
+      consumes:
+      - application/json
+      description: 分页查询考生，支持关键词搜索（学号/姓名）
+      parameters:
+      - description: 搜索关键词
+        in: query
+        name: keyword
+        type: string
+      - description: 页码 (默认 1)
+        in: query
+        name: page
+        type: integer
+      - description: 每页条数 (默认 10)
+        in: query
+        name: pageSize
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 考生列表
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.PagedData'
+              type: object
+        "500":
+          description: 查询失败
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 获取考生列表
+      tags:
+      - 考生管理
+    post:
+      consumes:
+      - application/json
+      description: 管理员手动添加一名考生（学号+姓名+初始密码）
+      parameters:
+      - description: 考生信息
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.StudentImportReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 考生添加成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.Student'
+              type: object
+        "400":
+          description: 参数错误或学号已存在
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 添加单个考生
+      tags:
+      - 考生管理
+  /api/admin/students/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: 删除指定考生及其相关数据
+      parameters:
+      - description: 考生 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 考生已删除
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: 无效的ID
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: 删除失败
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 删除考生
+      tags:
+      - 考生管理
+    put:
+      consumes:
+      - application/json
+      description: 修改指定考生的姓名和/或密码
+      parameters:
+      - description: 考生 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: '{\'
+        in: body
+        name: body
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 考生信息已更新
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 更新考生信息
+      tags:
+      - 考生管理
+  /api/admin/students/batch:
+    post:
+      consumes:
+      - application/json
+      description: 一次性导入多名考生，自动跳过已存在的学号
+      parameters:
+      - description: 考生列表
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.StudentImportBatchReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 导入结果
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.BatchImportResult'
+              type: object
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 批量导入考生
+      tags:
+      - 考生管理
+  /api/admin/template:
+    get:
+      consumes:
+      - application/json
+      description: 下载 Excel 格式的导入模板文件，含表头和格式说明
+      produces:
+      - application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+      responses:
+        "200":
+          description: Excel 模板文件
+          schema:
+            type: file
+      security:
+      - BearerToken: []
+      summary: 下载考题导入模板
+      tags:
+      - 题目管理
+  /api/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: 使用工号+密码登录，支持管理员和考生身份
+      parameters:
+      - description: 登录请求
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 登录成功
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.LoginResponseData'
+              type: object
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: 账号或密码错误
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      summary: 账号密码登录
+      tags:
+      - 认证
+  /api/auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: 清除服务端 Token 和浏览器 Cookie
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 已登出
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 退出登录
+      tags:
+      - 认证
+  /api/auth/me:
+    get:
+      consumes:
+      - application/json
+      description: 根据 Token 返回当前登录的管理员或考生信息
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 当前用户信息
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.LoginUserDTO'
+              type: object
+        "401":
+          description: 未登录或用户不存在
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 获取当前登录用户
+      tags:
+      - 认证
+  /api/auth/password:
+    put:
+      consumes:
+      - application/json
+      description: 验证旧密码后修改为新密码
+      parameters:
+      - description: 新旧密码
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.ChangePasswordReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 密码修改成功
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "400":
+          description: 参数错误或验证失败
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "401":
+          description: 未登录
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 修改当前用户密码
+      tags:
+      - 认证
+  /api/auth/wxwork/callback:
+    get:
+      consumes:
+      - application/json
+      description: 企业微信 OAuth2 授权回调，换取用户身份信息并跳转到登录页
+      parameters:
+      - description: 企微授权 code
+        in: query
+        name: code
+        required: true
+        type: string
+      - description: 自定义 state 参数
+        in: query
+        name: state
+        type: string
+      produces:
+      - application/json
+      responses:
+        "302":
+          description: 重定向到登录页
+        "400":
+          description: 缺少 code 参数
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "500":
+          description: 认证失败
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      summary: 企业微信授权回调
+      tags:
+      - 认证
+  /api/auth/wxwork/url:
+    get:
+      consumes:
+      - application/json
+      description: 构造企业微信 OAuth2 授权链接，用户访问后跳转到企微授权页
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功返回授权 URL
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.WxWorkAuthData'
+              type: object
+        "400":
+          description: 请求失败
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      summary: 获取企业微信授权 URL
+      tags:
+      - 认证
+  /api/exam/questions:
+    get:
+      consumes:
+      - application/json
+      description: 学生端获取考试题目（不含答案）。如果已提交且不允许重复，则返回历史成绩
+      parameters:
+      - description: 考试 ID
+        in: query
+        name: examId
+        required: true
+        type: integer
+      - description: 考生姓名
+        in: query
+        name: studentName
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 考题列表或历史成绩
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.ExamQuestionsData'
+              type: object
+        "400":
+          description: 缺少 examId
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+        "404":
+          description: 考试不存在
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 获取考试题目
+      tags:
+      - 学生端
+  /api/exam/submit:
+    post:
+      consumes:
+      - application/json
+      description: 学生提交考试答案，系统自动判分并返回结果
+      parameters:
+      - description: 答案数据
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/models.SubmitExamReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 判分结果
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/models.ExamResultRes'
+              type: object
+        "400":
+          description: 参数错误或不允许重复提交
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 提交考试答案
+      tags:
+      - 学生端
+  /api/student/exams:
+    get:
+      consumes:
+      - application/json
+      description: 学生端查看当前可参加的考试（状态为 active/upcoming），含是否已参加的标记
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 考试列表
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.StudentExamItem'
+                  type: array
+              type: object
+      security:
+      - BearerToken: []
+      summary: 获取可用考试列表
+      tags:
+      - 学生端
+  /api/student/records:
+    get:
+      consumes:
+      - application/json
+      description: 查询指定考生的所有考试成绩记录
+      parameters:
+      - description: 考生姓名
+        in: query
+        name: studentName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成绩列表
+          schema:
+            allOf:
+            - $ref: '#/definitions/models.APIResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/models.StudentRecordItem'
+                  type: array
+              type: object
+        "500":
+          description: 查询失败
+          schema:
+            $ref: '#/definitions/models.APIResponse'
+      security:
+      - BearerToken: []
+      summary: 获取考生历史成绩
+      tags:
+      - 学生端
+securityDefinitions:
+  BearerToken:
+    description: 输入 "Bearer {token}" 或通过 Cookie exam_token 传递
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
+tags:
+- description: 登录、登出、企业微信 OAuth、修改密码
+  name: 认证
+- description: 考试分类的 CRUD（管理员）
+  name: 分类管理
+- description: 考题 CRUD、批量导入、模板下载（管理员）
+  name: 题目管理
+- description: 考试 CRUD、考试内考题配置（管理员）
+  name: 考试管理
+- description: 成绩查询与导出（管理员）
+  name: 成绩管理
+- description: 考生 CRUD、批量导入（管理员）
+  name: 考生管理
+- description: 学生参加考试、查看成绩
+  name: 学生端

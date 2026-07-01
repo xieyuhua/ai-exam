@@ -1,0 +1,4 @@
+.codebuddy
+*.exe*
+*.db
+node_modules
