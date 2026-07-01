@@ -141,21 +141,33 @@ func Set(key string, value any, ttl time.Duration) {
 	conn := getConn()
 	if conn != nil {
 		defer conn.Close()
-		data, err := json.Marshal(value)
-		if err != nil {
-			log.Printf("❌ 缓存序列化失败 key=%s: %v", key, err)
-			return
+		// 字符串直接存，避免 json.Marshal 加上多余的双引号
+		var data []byte
+		if str, ok := value.(string); ok {
+			data = []byte(str)
+		} else {
+			var err error
+			data, err = json.Marshal(value)
+			if err != nil {
+				log.Printf("❌ 缓存序列化失败 key=%s: %v", key, err)
+				return
+			}
 		}
 		ttlSeconds := int(ttl.Seconds())
 		if ttlSeconds > 0 {
-			_, err = conn.Do("SET", key, data, "EX", ttlSeconds)
+			_, err := conn.Do("SET", key, data, "EX", ttlSeconds)
+			if err != nil {
+				log.Printf("❌ Redis 写入失败 key=%s: %v（回退内存）", key, err)
+				pool = nil
+				goto memFallback
+			}
 		} else {
-			_, err = conn.Do("SET", key, data)
-		}
-		if err != nil {
-			log.Printf("❌ Redis 写入失败 key=%s: %v（回退内存）", key, err)
-			pool = nil // 后续全部走内存缓存
-			goto memFallback
+			_, err := conn.Do("SET", key, data)
+			if err != nil {
+				log.Printf("❌ Redis 写入失败 key=%s: %v（回退内存）", key, err)
+				pool = nil
+				goto memFallback
+			}
 		}
 		return
 	}
