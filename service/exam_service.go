@@ -36,8 +36,25 @@ func (s *ExamService) List(categoryID, keyword, status string, page, pageSize in
 		QuestionIDs   []uint  `json:"questionIds"`
 	}
 
+	now := time.Now()
+	loc := now.Location()
 	result := make([]examDetail, len(exams))
 	for i, e := range exams {
+		// DB(SQLite) 不存时区，按本地时区重新解释后实时计算状态
+		startTime := time.Date(e.StartTime.Year(), e.StartTime.Month(), e.StartTime.Day(),
+			e.StartTime.Hour(), e.StartTime.Minute(), e.StartTime.Second(), 0, loc)
+		endTime := time.Date(e.EndTime.Year(), e.EndTime.Month(), e.EndTime.Day(),
+			e.EndTime.Hour(), e.EndTime.Minute(), e.EndTime.Second(), 0, loc)
+		e.StartTime = startTime
+		e.EndTime = endTime
+		if now.After(startTime) && now.Before(endTime) {
+			e.Status = "active"
+		} else if now.After(endTime) {
+			e.Status = "ended"
+		} else {
+			e.Status = "upcoming"
+		}
+
 		cat, _ := s.catRepo.GetByID(e.CategoryID)
 		qCount := s.eqRepo.CountByExamID(e.ID)
 		eqs, _ := s.eqRepo.GetByExamID(e.ID)
