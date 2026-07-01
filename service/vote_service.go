@@ -8,6 +8,7 @@ import (
 	resp "exam-system/dto/response"
 	"errors"
 	"sort"
+	"time"
 )
 
 type VoteService struct {
@@ -237,14 +238,20 @@ func (s *VoteService) GetStudentVotes(studentName string) ([]resp.StudentVoteIte
 		}
 		total, _ := s.repo.CountRecords(v.ID)
 
+		// DB 时间按本地时区重新解释后格式化输出
+		loc := time.Now().Location()
+		startTime := time.Date(v.StartTime.Year(), v.StartTime.Month(), v.StartTime.Day(),
+			v.StartTime.Hour(), v.StartTime.Minute(), v.StartTime.Second(), 0, loc)
+		endTime := time.Date(v.EndTime.Year(), v.EndTime.Month(), v.EndTime.Day(),
+			v.EndTime.Hour(), v.EndTime.Minute(), v.EndTime.Second(), 0, loc)
 		items = append(items, resp.StudentVoteItem{
 			ID:          v.ID,
 			Title:       v.Title,
 			Description: v.Description,
 			VoteType:    v.VoteType,
 			Status:      v.Status,
-			StartTime:   v.StartTime.Format("2006-01-02 15:04"),
-			EndTime:     v.EndTime.Format("2006-01-02 15:04"),
+			StartTime:   startTime.Format("2006-01-02 15:04"),
+			EndTime:     endTime.Format("2006-01-02 15:04"),
 			AllowRepeat: v.AllowRepeat != nil && *v.AllowRepeat,
 			IsPublic:    v.IsPublic == nil || *v.IsPublic,
 			HasVoted:    hasVoted,

@@ -271,7 +271,7 @@ func (h *SurveyHandler) ExportSurveyDetail(c *gin.Context) {
 			QuestionTitle: questionMap[ans.SurveyQuestionID],
 			QuestionType:  questionTypeMap[ans.SurveyQuestionID],
 			Answer:        answerText,
-			SubmitTime:    ans.CreatedAt.Format("2006-01-02 15:04:05"),
+			SubmitTime:    ans.CreatedAt.Local().Format("2006-01-02 15:04:05"),
 		})
 	}
 
@@ -424,7 +424,7 @@ func (h *SurveyHandler) ExportSurveys(c *gin.Context) {
 			QuestionTitle: questionMap[ans.SurveyQuestionID],
 			QuestionType:  questionTypeMap[ans.SurveyQuestionID],
 			Answer:        answerText,
-			SubmitTime:    ans.CreatedAt.Format("2006-01-02 15:04:05"),
+			SubmitTime:    ans.CreatedAt.Local().Format("2006-01-02 15:04:05"),
 		})
 	}
 

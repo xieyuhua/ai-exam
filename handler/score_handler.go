@@ -660,7 +660,7 @@ func (h *ScoreHandler) GetStudentRecords(c *gin.Context) {
 		result[i] = gin.H{
 			"id":            s.ID,
 			"examTitle":     exam.Title,
-			"date":          s.CreatedAt.Format("2006-01-02 15:04"),
+			"date":          s.CreatedAt.Local().Format("2006-01-02 15:04"),
 			"score":         s.Score,
 			"correctCount":  s.Correct,
 			"totalCount":    s.Total,

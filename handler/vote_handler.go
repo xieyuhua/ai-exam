@@ -204,7 +204,7 @@ func (h *VoteHandler) ExportVoteDetail(c *gin.Context) {
 			VoteTitle:   vote.Title,
 			StudentName: rec.StudentName,
 			Options:     strings.Join(optLabels, "、"),
-			VoteTime:    rec.CreatedAt.Format("2006-01-02 15:04:05"),
+			VoteTime:    rec.CreatedAt.Local().Format("2006-01-02 15:04:05"),
 		})
 	}
 
@@ -314,7 +314,7 @@ func (h *VoteHandler) ExportVotes(c *gin.Context) {
 			VoteTitle:   voteTitleMap[rec.VoteID],
 			StudentName: rec.StudentName,
 			Options:     strings.Join(optLabels, "、"),
-			VoteTime:    rec.CreatedAt.Format("2006-01-02 15:04:05"),
+			VoteTime:    rec.CreatedAt.Local().Format("2006-01-02 15:04:05"),
 		})
 	}
 

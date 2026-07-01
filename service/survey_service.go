@@ -294,13 +294,19 @@ func (s *SurveyService) GetStudentSurveys(studentName string) ([]resp.StudentSur
 		if len(answers) > 0 {
 			hasCompleted = true
 		}
+		// DB 时间按本地时区重新解释后格式化输出
+		loc := time.Now().Location()
+		startTime := time.Date(survey.StartTime.Year(), survey.StartTime.Month(), survey.StartTime.Day(),
+			survey.StartTime.Hour(), survey.StartTime.Minute(), survey.StartTime.Second(), 0, loc)
+		endTime := time.Date(survey.EndTime.Year(), survey.EndTime.Month(), survey.EndTime.Day(),
+			survey.EndTime.Hour(), survey.EndTime.Minute(), survey.EndTime.Second(), 0, loc)
 		items = append(items, resp.StudentSurveyItem{
 			ID:            survey.ID,
 			Title:         survey.Title,
 			Description:   survey.Description,
 			Status:        survey.Status,
-			StartTime:     survey.StartTime.Format("2006-01-02 15:04"),
-			EndTime:       survey.EndTime.Format("2006-01-02 15:04"),
+			StartTime:     startTime.Format("2006-01-02 15:04"),
+			EndTime:       endTime.Format("2006-01-02 15:04"),
 			AllowRepeat:   survey.AllowRepeat != nil && *survey.AllowRepeat,
 			HasCompleted:  hasCompleted,
 			QuestionCount: len(questions),

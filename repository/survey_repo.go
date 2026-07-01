@@ -71,9 +71,10 @@ func (r *SurveyRepo) UpdateStatus(ids []uint, status string) error {
 }
 
 func (r *SurveyRepo) AutoUpdateStatus() {
-	now := time.Now()
-	r.db.Model(&models.Survey{}).Where("status = ? AND start_time <= ? AND end_time >= ?", "upcoming", now, now).Update("status", "active")
-	r.db.Model(&models.Survey{}).Where("status = ? AND end_time < ?", "active", now).Update("status", "ended")
+	// SQLite 不存时区，传格式化字符串（无时区后缀）确保字符串比较一致
+	nowStr := time.Now().Format("2006-01-02 15:04:05")
+	r.db.Model(&models.Survey{}).Where("status = ? AND start_time <= ? AND end_time >= ?", "upcoming", nowStr, nowStr).Update("status", "active")
+	r.db.Model(&models.Survey{}).Where("status = ? AND end_time < ?", "active", nowStr).Update("status", "ended")
 }
 
 // SurveyQuestion
