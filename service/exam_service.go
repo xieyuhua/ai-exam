@@ -70,8 +70,8 @@ func (s *ExamService) List(categoryID, keyword, status string, page, pageSize in
 }
 
 func (s *ExamService) Create(r req.CreateExamReq, db *gorm.DB) (*models.Exam, error) {
-	startTime, _ := time.Parse("2006-01-02T15:04", r.StartTime)
-	endTime, _ := time.Parse("2006-01-02T15:04", r.EndTime)
+	startTime, _ := time.ParseInLocation("2006-01-02T15:04", r.StartTime, time.Local)
+	endTime, _ := time.ParseInLocation("2006-01-02T15:04", r.EndTime, time.Local)
 
 	canView := true
 	if r.CanViewAnswer != nil {
@@ -134,11 +134,11 @@ func (s *ExamService) Update(id uint, r req.UpdateExamReq) error {
 		updates["total_score"] = r.TotalScore
 	}
 	if r.StartTime != "" {
-		t, _ := time.Parse("2006-01-02T15:04", r.StartTime)
+		t, _ := time.ParseInLocation("2006-01-02T15:04", r.StartTime, time.Local)
 		updates["start_time"] = t
 	}
 	if r.EndTime != "" {
-		t, _ := time.Parse("2006-01-02T15:04", r.EndTime)
+		t, _ := time.ParseInLocation("2006-01-02T15:04", r.EndTime, time.Local)
 		updates["end_time"] = t
 	}
 	if r.CanViewAnswer != nil {
@@ -155,10 +155,15 @@ func (s *ExamService) Update(id uint, r req.UpdateExamReq) error {
 		exam, _ := s.repo.GetByID(id)
 		if exam != nil {
 			now := time.Now()
+			loc := now.Location()
+			startTime := time.Date(exam.StartTime.Year(), exam.StartTime.Month(), exam.StartTime.Day(),
+				exam.StartTime.Hour(), exam.StartTime.Minute(), exam.StartTime.Second(), 0, loc)
+			endTime := time.Date(exam.EndTime.Year(), exam.EndTime.Month(), exam.EndTime.Day(),
+				exam.EndTime.Hour(), exam.EndTime.Minute(), exam.EndTime.Second(), 0, loc)
 			newStatus := "upcoming"
-			if now.After(exam.StartTime) && now.Before(exam.EndTime) {
+			if now.After(startTime) && now.Before(endTime) {
 				newStatus = "active"
-			} else if now.After(exam.EndTime) {
+			} else if now.After(endTime) {
 				newStatus = "ended"
 			}
 			s.repo.Update(id, map[string]interface{}{"status": newStatus})

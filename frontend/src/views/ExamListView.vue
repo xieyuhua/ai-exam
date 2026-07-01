@@ -109,12 +109,27 @@ function statusBadge(status) {
 }
 function canStart(exam) {
   if (exam.hasAttempted && !exam.allowRepeat) return false
-  return exam.status === 'active'
+  // 优先使用后端返回的状态，配合客户端时间做兜底判断
+  if (exam.status === 'active') return true
+  // 客户端时间兜底：后端状态可能未及时更新（如旧数据时区问题）
+  const now = Date.now()
+  const startTime = parseTime(exam.startTime)
+  const endTime = parseTime(exam.endTime)
+  return now >= startTime && now < endTime
 }
 function examBtnText(exam) {
   if (exam.hasAttempted && !exam.allowRepeat) return '✓ 已完成'
-  if (exam.status === 'active') return '▶ 开始考试'
-  return exam.status === 'upcoming' ? '未开始' : '已结束'
+  const now = Date.now()
+  const startTime = parseTime(exam.startTime)
+  const endTime = parseTime(exam.endTime)
+  if (exam.status === 'active' || (now >= startTime && now < endTime)) return '▶ 开始考试'
+  if (exam.status === 'ended' || now >= endTime) return '已结束'
+  return '未开始'
+}
+function parseTime(str) {
+  if (!str) return NaN
+  // 兼容浏览器差异：将空格替换为 T，确保 new Date() 能正确解析
+  return new Date(str.replace(' ', 'T')).getTime()
 }
 function scoreClass(r) {
   const rt = rate(r); if (rt >= 80) return 'green'; if (rt < 60) return 'red'; return 'orange'

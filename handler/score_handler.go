@@ -279,8 +279,24 @@ func (h *ScoreHandler) GetStudentExams(c *gin.Context) {
 	var exams []models.Exam
 	db.Where("status IN ?", []string{"active", "upcoming"}).Order("start_time asc").Find(&exams)
 
+	now := time.Now()
+	loc := now.Location()
 	result := make([]resp.StudentExamItem, len(exams))
 	for i, e := range exams {
+		// DB (SQLite) 不存时区，读出被当 UTC；这里按本地时区重新解释后比较
+		startTime := time.Date(e.StartTime.Year(), e.StartTime.Month(), e.StartTime.Day(),
+			e.StartTime.Hour(), e.StartTime.Minute(), e.StartTime.Second(), 0, loc)
+		endTime := time.Date(e.EndTime.Year(), e.EndTime.Month(), e.EndTime.Day(),
+			e.EndTime.Hour(), e.EndTime.Minute(), e.EndTime.Second(), 0, loc)
+
+		// 实时计算考试状态（而非依赖数据库静态字段）
+		realStatus := "upcoming"
+		if now.After(startTime) && now.Before(endTime) {
+			realStatus = "active"
+		} else if now.After(endTime) {
+			realStatus = "ended"
+		}
+
 		// 实时查询考题数量和分值总和
 		var eqs []models.ExamQuestion
 		db.Where("exam_id = ?", e.ID).Find(&eqs)
@@ -316,9 +332,9 @@ func (h *ScoreHandler) GetStudentExams(c *gin.Context) {
 			QuestionCount: qCount,
 			TotalScore:    totalScore,
 			Duration:      e.Duration,
-			Status:        e.Status,
-			StartTime:     e.StartTime.Format("2006-01-02 15:04"),
-			EndTime:       e.EndTime.Format("2006-01-02 15:04"),
+			Status:        realStatus,
+			StartTime:     startTime.Format("2006-01-02 15:04"),
+			EndTime:       endTime.Format("2006-01-02 15:04"),
 			AllowRepeat:   allowRepeat,
 			CanViewAnswer: canView,
 			HasAttempted:  hasAttempted,
@@ -360,6 +376,22 @@ func (h *ScoreHandler) GetExamQuestions(c *gin.Context) {
 	var exam models.Exam
 	if db.First(&exam, uid).Error != nil {
 		c.JSON(http.StatusNotFound, gin.H{"code": 404, "message": "考试不存在"})
+		return
+	}
+
+	// 实时校验考试时间状态（DB 无时区，需按本地时区重新解释）
+	now := time.Now()
+	loc := now.Location()
+	startTime := time.Date(exam.StartTime.Year(), exam.StartTime.Month(), exam.StartTime.Day(),
+		exam.StartTime.Hour(), exam.StartTime.Minute(), exam.StartTime.Second(), 0, loc)
+	endTime := time.Date(exam.EndTime.Year(), exam.EndTime.Month(), exam.EndTime.Day(),
+		exam.EndTime.Hour(), exam.EndTime.Minute(), exam.EndTime.Second(), 0, loc)
+	if now.Before(startTime) {
+		c.JSON(http.StatusForbidden, gin.H{"code": 403, "message": "考试尚未开始"})
+		return
+	}
+	if now.After(endTime) {
+		c.JSON(http.StatusForbidden, gin.H{"code": 403, "message": "考试已结束"})
 		return
 	}
 
