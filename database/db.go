@@ -16,7 +16,7 @@ var DB *gorm.DB
 
 type Config struct {
 	Driver string // "sqlite" or "mysql"
-	DSN    string // sqlite: file path; mysql: user:pass@tcp(host:port)/dbname?charset=utf8mb4&parseTime=True
+	DSN    string // sqlite: file path; mysql: user:pass@tcp(host:port)/dbname?charset=utf8mb4&parseTime=True&loc=Local
 }
 
 func Init(cfg Config) {

@@ -164,10 +164,32 @@ func (h *SurveyHandler) SubmitSurvey(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"code": 200, "message": "提交成功"})
 }
 
+// 状态自动更新（Go 层面比较，兼容 SQLite/MySQL 时区差异）
 func (h *SurveyHandler) updateSurveyStatus() {
 	now := time.Now()
-	h.getDB().Model(&models.Survey{}).Where("status = ? AND start_time <= ? AND end_time >= ?", "upcoming", now, now).Update("status", "active")
-	h.getDB().Model(&models.Survey{}).Where("status = ? AND end_time < ?", "active", now).Update("status", "ended")
+	loc := now.Location()
+	db := h.getDB()
+
+	var surveys []models.Survey
+	db.Find(&surveys)
+	for _, s := range surveys {
+		startTime := time.Date(s.StartTime.Year(), s.StartTime.Month(), s.StartTime.Day(),
+			s.StartTime.Hour(), s.StartTime.Minute(), s.StartTime.Second(), 0, loc)
+		endTime := time.Date(s.EndTime.Year(), s.EndTime.Month(), s.EndTime.Day(),
+			s.EndTime.Hour(), s.EndTime.Minute(), s.EndTime.Second(), 0, loc)
+
+		var newStatus string
+		if now.After(startTime) && now.Before(endTime) {
+			newStatus = "active"
+		} else if now.After(endTime) {
+			newStatus = "ended"
+		} else {
+			newStatus = "upcoming"
+		}
+		if s.Status != newStatus {
+			db.Model(&s).Update("status", newStatus)
+		}
+	}
 }
 
 // ExportSurveyDetail 导出单个问卷数据

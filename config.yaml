@@ -7,7 +7,7 @@ server:
 
 database:
   driver: sqlite        # 数据库类型: sqlite / mysql
-  dsn: exam.db          # SQLite: 文件路径  MySQL: user:pass@tcp(host:port)/dbname?charset=utf8mb4&parseTime=True
+  dsn: exam.db          # SQLite: 文件路径  MySQL: user:pass@tcp(host:port)/dbname?charset=utf8mb4&parseTime=True&loc=Local
 
 # Redis 缓存配置
 redis:

@@ -371,9 +371,30 @@ func (h *VoteHandler) ExportVotes(c *gin.Context) {
 	f.Write(c.Writer)
 }
 
-// 状态自动更新
+// 状态自动更新（Go 层面比较，兼容 SQLite/MySQL 时区差异）
 func (h *VoteHandler) updateVoteStatus() {
 	now := time.Now()
-	h.getDB().Model(&models.Vote{}).Where("status = ? AND start_time <= ? AND end_time >= ?", "upcoming", now, now).Update("status", "active")
-	h.getDB().Model(&models.Vote{}).Where("status = ? AND end_time < ?", "active", now).Update("status", "ended")
+	loc := now.Location()
+	db := h.getDB()
+
+	var votes []models.Vote
+	db.Find(&votes)
+	for _, v := range votes {
+		startTime := time.Date(v.StartTime.Year(), v.StartTime.Month(), v.StartTime.Day(),
+			v.StartTime.Hour(), v.StartTime.Minute(), v.StartTime.Second(), 0, loc)
+		endTime := time.Date(v.EndTime.Year(), v.EndTime.Month(), v.EndTime.Day(),
+			v.EndTime.Hour(), v.EndTime.Minute(), v.EndTime.Second(), 0, loc)
+
+		var newStatus string
+		if now.After(startTime) && now.Before(endTime) {
+			newStatus = "active"
+		} else if now.After(endTime) {
+			newStatus = "ended"
+		} else {
+			newStatus = "upcoming"
+		}
+		if v.Status != newStatus {
+			db.Model(&v).Update("status", newStatus)
+		}
+	}
 }

@@ -253,7 +253,13 @@ func (s *SurveyService) Submit(studentName string, r req.SubmitSurveyReq) error 
 	if survey.Status != "active" {
 		return errors.New("问卷未开放")
 	}
-	if time.Now().Before(survey.StartTime) || time.Now().After(survey.EndTime) {
+	now := time.Now()
+	loc := now.Location()
+	startTime := time.Date(survey.StartTime.Year(), survey.StartTime.Month(), survey.StartTime.Day(),
+		survey.StartTime.Hour(), survey.StartTime.Minute(), survey.StartTime.Second(), 0, loc)
+	endTime := time.Date(survey.EndTime.Year(), survey.EndTime.Month(), survey.EndTime.Day(),
+		survey.EndTime.Hour(), survey.EndTime.Minute(), survey.EndTime.Second(), 0, loc)
+	if now.Before(startTime) || now.After(endTime) {
 		return errors.New("不在问卷有效时间范围内")
 	}
 
