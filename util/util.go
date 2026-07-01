@@ -34,14 +34,17 @@ func parseInt(s string) (int, bool) {
 	return n, true
 }
 
-// NormalizeQuestionType 规范化题型名称
+// NormalizeQuestionType 规范化题型名称（支持中英文）
 func NormalizeQuestionType(s string) string {
 	lower := strings.ToLower(strings.TrimSpace(s))
 	switch {
-	case strings.Contains(lower, "multi") || lower == "multiple":
+	case strings.Contains(lower, "多选") || strings.Contains(lower, "multi") || lower == "multiple":
 		return "multiple"
 	case strings.Contains(lower, "判断") || strings.Contains(lower, "判") || lower == "judge" || lower == "boolean":
 		return "judge"
+	case strings.Contains(lower, "多") && strings.Contains(lower, "选"):
+		// "多选题" 等包含"多选"的变体，已在上面处理；此处兜底"多选"类关键词
+		return "multiple"
 	case strings.Contains(lower, "填空") || lower == "fill" || lower == "blank":
 		return "fill"
 	case strings.Contains(lower, "简答") || strings.Contains(lower, "问答") || lower == "essay" || lower == "short_answer":

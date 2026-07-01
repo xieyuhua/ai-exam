@@ -115,7 +115,7 @@ func (s *QuestionService) ImportBatch(categoryID uint, rows []ImportQuestionRow)
 		answerJSON, _ := json.Marshal(item.Answer)
 		q := models.Question{
 			CategoryID:  categoryID,
-			Type:        item.Type,
+			Type:        util.NormalizeQuestionType(item.Type),
 			Title:       item.Title,
 			Options:     string(optionsJSON),
 			Answer:      string(answerJSON),
