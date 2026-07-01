@@ -81,7 +81,7 @@ func (h *AuthHandler) WxWorkCallback(c *gin.Context) {
 	if c.Request.TLS != nil || c.GetHeader("X-Forwarded-Proto") == "https" {
 		scheme = "https"
 	}
-	redirectURL := scheme + "://" + c.Request.Host + "/login.html?token=" + token + "&role=student"
+	redirectURL := scheme + "://" + c.Request.Host + "/?token=" + token + "&role=student"
 	c.Redirect(http.StatusFound, redirectURL)
 }
 
