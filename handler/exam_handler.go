@@ -329,6 +329,31 @@ func (h *ExamHandler) RemoveExamQuestion(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"code": 200, "message": "移除成功"})
 }
 
+// ClearExamQuestions 一键清空考试内所有考题
+// @Summary      一键清空考试考题
+// @Description  删除考试内所有考题关联（不删除题目库中的题目本身）
+// @Tags         考试管理
+// @Accept       json
+// @Produce      json
+// @Param        id  path  int  true  "考试 ID"
+// @Success      200  {object}  resp.APIResponse  "清空成功"
+// @Failure      404  {object}  resp.APIResponse  "考试不存在"
+// @Security     BearerToken
+// @Router       /api/admin/exams/{id}/questions/clear [delete]
+func (h *ExamHandler) ClearExamQuestions(c *gin.Context) {
+	examID, err := strconv.ParseUint(c.Param("id"), 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"code": 400, "message": "无效的考试ID"})
+		return
+	}
+
+	if err := h.svc.Exam.ClearExamQuestions(uint(examID)); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"code": 500, "message": "清空失败"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"code": 200, "message": "已清空该考试所有考题"})
+}
+
 // ExportExamQuestions 导出考题到 Excel（按导入模板格式）
 // @Summary      导出考题
 // @Description  导出考试内所有考题为 Excel 文件，格式与导入模板一致，方便修改后重新导入覆盖

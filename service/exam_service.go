@@ -237,6 +237,10 @@ func (s *ExamService) RemoveExamQuestion(examID, questionID uint) error {
 	return s.eqRepo.DeleteByExamAndQuestion(examID, questionID)
 }
 
+func (s *ExamService) ClearExamQuestions(examID uint) error {
+	return s.eqRepo.DeleteByExamID(nil, examID)
+}
+
 func (s *ExamService) GetAvailableQuestions(categoryID uint, existingIDs []uint, keyword, qType string, limit int) ([]models.Question, error) {
 	return s.qRepo.AvailableForExam(categoryID, existingIDs, keyword, qType, limit)
 }

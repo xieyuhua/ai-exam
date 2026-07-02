@@ -184,6 +184,7 @@ func main() {
 		admin.POST("/exams/:id/questions/import", h.Exam.ImportExamQuestions)
 		admin.GET("/exams/:id/questions/export", h.Exam.ExportExamQuestions)
 		admin.PUT("/exams/:id/questions/:qid", h.Exam.UpdateExamQuestionScore)
+		admin.DELETE("/exams/:id/questions/clear", h.Exam.ClearExamQuestions)
 		admin.DELETE("/exams/:id/questions/:qid", h.Exam.RemoveExamQuestion)
 
 		// 可导入题库题目

@@ -13,6 +13,7 @@
         <button class="btn btn-primary" @click="openCreate">➕ 新增考题</button>
         <button class="btn btn-secondary" @click="triggerTableImport">📄 表格导入</button>
         <button class="btn btn-outline-export" @click="exportQuestions">📤 导出考题</button>
+        <button class="btn btn-outline-danger" @click="clearQuestions">🗑️ 清空考题</button>
         <button class="btn btn-secondary" @click="refresh">🔄 刷新</button>
       </div>
     </div>
@@ -391,6 +392,19 @@ async function removeQuestion(eq) {
   }
 }
 
+// ── 一键清空 ──
+async function clearQuestions() {
+  if (questions.value.length === 0) return showToast('当前考试暂无考题', 'info')
+  if (!confirm(`确定要清空当前考试下全部 ${questions.value.length} 道考题吗？此操作不可撤销。`)) return
+  const res = await api(`/admin/exams/${props.examId}/questions/clear`, { method: 'DELETE' })
+  if (res.code === 200) {
+    showToast('已清空所有考题', 'success')
+    refresh()
+  } else {
+    showToast(res.message || '清空失败', 'error')
+  }
+}
+
 // ── 导出考题 ──
 async function exportQuestions() {
   try {
@@ -613,4 +627,6 @@ onMounted(refresh)
 .btn-outline-template:hover { background: #eef2ff; }
 .btn-outline-export { background: none; border: 1px solid #16a34a; color: #16a34a; }
 .btn-outline-export:hover { background: #f0fdf4; }
+.btn-outline-danger { background: none; border: 1px solid #dc2626; color: #dc2626; }
+.btn-outline-danger:hover { background: #fef2f2; }
 </style>
